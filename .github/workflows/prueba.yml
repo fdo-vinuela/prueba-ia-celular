@@ -25,7 +25,7 @@ jobs:
           CI: true
         run: |
           export PATH="$HOME/.local/bin:$PATH"
-          agy --dangerously-skip-permissions --non-interactive "${{ env.PROMPT_TEXT }}"
+          agy --dangerously-skip-permissions --print "${{ env.PROMPT_TEXT }}"
           
       - name: Guardar Cambios
         run: |
