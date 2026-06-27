@@ -14,20 +14,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm install -g antigravity-cli
-      - env:
+      
+      - name: Instalar Antigravity
+        run: curl -fsSL https://antigravity.google/cli/install.sh | bash
+        
+      - name: Ejecutar IA
+        env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PROMPT_TEXT: ${{ github.event.issue.body }}
         run: |
-          agy trust .
-          agy "${{ env.PROMPT_TEXT }}"
-      - run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          agy --dangerously-skip-permissions "${{ env.PROMPT_TEXT }}"
+          
+      - name: Guardar Cambios
+        run: |
           git config --global user.name "antigravity-bot"
           git config --global user.email "bot@github.com"
           git add .
           git commit -m "🤖 Código actualizado por IA" || echo "Sin cambios"
           git push
-          
