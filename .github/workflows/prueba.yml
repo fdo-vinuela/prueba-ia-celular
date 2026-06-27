@@ -20,6 +20,7 @@ jobs:
         
       - name: Ejecutar IA
         env:
+          GOOGLE_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PROMPT_TEXT: ${{ github.event.issue.body }}
           CI: true
