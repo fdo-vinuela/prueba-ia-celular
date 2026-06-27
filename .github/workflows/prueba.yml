@@ -1,4 +1,4 @@
-name: Antigravity Test
+name: Mi Agente IA
 
 on:
   issues:
@@ -9,28 +9,53 @@ permissions:
   issues: write
 
 jobs:
-  execute-agent:
+  ejecutar-ia:
     if: contains(github.event.issue.labels.*.name, 'antigravity')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
-      - name: Instalar Antigravity
-        run: curl -fsSL https://antigravity.google/cli/install.sh | bash
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Instalar SDK de Gemini
+        run: npm install @google/genai
         
-      - name: Ejecutar IA
+      - name: El Cerebro de la IA
         env:
-          GOOGLE_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PROMPT_TEXT: ${{ github.event.issue.body }}
-          CI: true
         run: |
-          export PATH="$HOME/.local/bin:$PATH"
-          agy --dangerously-skip-permissions --print "${{ env.PROMPT_TEXT }}"
+          cat << 'EOF' > agente.js
+          const { GoogleGenAI } = require('@google/genai');
+          const fs = require('fs');
+          
+          const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+          const codigoActual = fs.readFileSync('index.html', 'utf8');
+          const instruccion = process.env.PROMPT_TEXT + "\n\nEste es mi código actual:\n" + codigoActual + "\n\nReescribe el código aplicando los cambios solicitados. Devuelve SOLO el código HTML completo, sin bloques de markdown, sin comillas extra y sin explicaciones.";
+          
+          async function trabajar() {
+            try {
+              const response = await ai.models.generateContent({
+                model: 'gemini-2.5-flash',
+                contents: instruccion,
+              });
+              let nuevoCodigo = response.text.replace(/```html/gi, '').replace(/```/g, '').trim();
+              fs.writeFileSync('index.html', nuevoCodigo);
+              console.log("¡Archivo reescrito con éxito!");
+            } catch (error) {
+              console.error("Error de la IA:", error);
+              process.exit(1);
+            }
+          }
+          trabajar();
+          EOF
+          node agente.js
           
       - name: Guardar Cambios
         run: |
-          git config --global user.name "antigravity-bot"
+          git config --global user.name "bot-ia"
           git config --global user.email "bot@github.com"
           git add .
           git commit -m "🤖 Código actualizado por IA" || echo "Sin cambios"
