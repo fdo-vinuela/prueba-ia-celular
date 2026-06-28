@@ -1,45 +1,156 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mi App Móvil</title>
+    <title>Plano Estructural Iterativo - Fase 4</title>
 </head>
 <body>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="100%" style="background-color: #ffffff; border: 4px solid #1a1a1a;">
   <style>
     .muro-perimetral { stroke: #1a1a1a; stroke-width: 12; fill: none; }
     .division-interior { stroke: #1a1a1a; stroke-width: 8; }
-    .muro-boceto { stroke: #e74c3c; stroke-width: 8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    
     .zona-comedor { fill: #f0f4f8; }
     .zona-cocina { fill: #f9f6f0; }
+    .zona-despensa { fill: #f5ede1; } /* Nueva zona para la subdivisión de cocina */
     .zona-hall { fill: #e8ecef; }
     .zona-living { fill: #f4f1ea; }
+    .zona-estudio { fill: #e0f2f7; } /* Nueva zona para el espacio separado del hall */
+
     .texto-principal { font-family: 'Segoe UI', Arial, sans-serif; font-size: 28px; font-weight: bold; fill: #111111; text-anchor: middle; dominant-baseline: middle; }
     .texto-sub { font-family: 'Segoe UI', Arial, sans-serif; font-size: 18px; fill: #555555; text-anchor: middle; dominant-baseline: middle; }
+    
+    .puerta-hueco { stroke: none; fill: none; }
+    .puerta-arco { stroke: #888888; stroke-width: 2; fill: none; stroke-linecap: round; }
+    .ventana { stroke: #3498db; stroke-width: 4; fill: none; stroke-linecap: round; }
+    
+    .mueble-cocina { fill: #a2a2a2; stroke: #666666; stroke-width: 2; }
+    .mueble-comedor { fill: #c0c0c0; stroke: #777777; stroke-width: 2; }
+    .mueble-living { fill: #8d8d8d; stroke: #555555; stroke-width: 2; }
+    .mueble-hall { fill: #b0b0b0; stroke: #707070; stroke-width: 2; }
+    .mueble-estudio { fill: #9ecae1; stroke: #5e84a2; stroke-width: 2; }
+
+    .simbolo-lavaplatos { fill: none; stroke: #333333; stroke-width: 2; }
+    .simbolo-cocina { fill: none; stroke: #333333; stroke-width: 2; }
   </style>
 
+  <!-- Definición de las zonas con sus rellenos -->
+  <!-- Comedor (Cuadrante Superior Izquierdo) -->
   <rect x="0" y="0" width="500" height="500" class="zona-comedor" />
-  <rect x="0" y="500" width="500" height="500" class="zona-cocina" />
-  <rect x="500" y="0" width="500" height="500" class="zona-hall" />
+  
+  <!-- Cocina (parte principal - Inferior Izquierdo) -->
+  <rect x="0" y="550" width="500" height="450" class="zona-cocina" />
+  <!-- Despensa/Anexo de Cocina (subdivisión) -->
+  <rect x="0" y="500" width="500" height="50" class="zona-despensa" />
+
+  <!-- Hall de Acceso (Corredor y Área de Transición - Superior Derecho) -->
+  <rect x="500" y="0" width="100" height="400" class="zona-hall" />
+  <rect x="500" y="400" width="500" height="100" class="zona-hall" />
+  <!-- Estudio/Closet (Nueva habitación - Superior Derecho) -->
+  <rect x="600" y="0" width="400" height="400" class="zona-estudio" />
+
+  <!-- Living (Cuadrante Inferior Derecho) -->
   <rect x="500" y="500" width="500" height="500" class="zona-living" />
 
+  <!-- Muros divisores interiores (Centrales) -->
   <line x1="500" y1="0" x2="500" y2="1000" class="division-interior" />
   <line x1="0" y1="500" x2="1000" y2="500" class="division-interior" />
 
-  <line x1="0" y1="550" x2="500" y2="550" class="muro-boceto" />
-  <polyline points="600,0 600,400 1000,400" class="muro-boceto" />
+  <!-- Nuevos muros permanentes (antes boceto en rojo) -->
+  <line x1="0" y1="550" x2="500" y2="550" class="division-interior" />
+  <line x1="600" y1="0" x2="600" y2="400" class="division-interior" />
+  <line x1="600" y1="400" x2="1000" y2="400" class="division-interior" />
 
+  <!-- Aberturas: Puertas -->
+  <!-- Puerta Principal (Hall - Perímetro superior) -->
+  <line x1="505" y1="0" x2="595" y2="0" stroke="#ffffff" stroke-width="8" class="puerta-hueco" />
+  <path d="M 595 0 A 90 90 0 0 0 505 90" class="puerta-arco" />
+
+  <!-- Puerta Hall a Comedor (muro central izquierdo) -->
+  <line x1="500" y1="210" x2="500" y2="290" stroke="#ffffff" stroke-width="8" class="puerta-hueco" />
+  <path d="M 500 210 A 80 80 0 0 1 420 290" class="puerta-arco" />
+
+  <!-- Puerta Comedor a Despensa (muro central inferior del comedor) -->
+  <line x1="210" y1="500" x2="290" y2="500" stroke="#ffffff" stroke-width="8" class="puerta-hueco" />
+  <path d="M 210 500 A 80 80 0 0 0 290 420" class="puerta-arco" />
+
+  <!-- Puerta Hall a Cocina (muro central inferior, hacia la cocina principal) -->
+  <line x1="500" y1="610" x2="500" y2="690" stroke="#ffffff" stroke-width="8" class="puerta-hueco" />
+  <path d="M 500 610 A 80 80 0 0 1 420 690" class="puerta-arco" />
+
+  <!-- Puerta Hall a Living (muro central derecho) -->
+  <line x1="710" y1="500" x2="790" y2="500" stroke="#ffffff" stroke-width="8" class="puerta-hueco" />
+  <path d="M 710 500 A 80 80 0 0 0 790 580" class="puerta-arco" />
+
+  <!-- Puerta Hall a Estudio (muro del estudio) -->
+  <line x1="600" y1="160" x2="600" y2="240" stroke="#ffffff" stroke-width="8" class="puerta-hueco" />
+  <path d="M 600 160 A 80 80 0 0 1 680 240" class="puerta-arco" />
+
+  <!-- Aberturas: Ventanas -->
+  <!-- Comedor -->
+  <line x1="0" y1="175" x2="0" y2="325" class="ventana" stroke-width="8" />
+  <line x1="175" y1="0" x2="325" y2="0" class="ventana" stroke-width="8" />
+  <!-- Cocina -->
+  <line x1="0" y1="700" x2="0" y2="850" class="ventana" stroke-width="8" />
+  <line x1="175" y1="1000" x2="325" y2="1000" class="ventana" stroke-width="8" />
+  <!-- Living -->
+  <line x1="1000" y1="675" x2="1000" y2="825" class="ventana" stroke-width="8" />
+  <line x1="675" y1="1000" x2="825" y2="1000" class="ventana" stroke-width="8" />
+  <!-- Estudio -->
+  <line x1="1000" y1="125" x2="1000" y2="275" class="ventana" stroke-width="8" />
+
+  <!-- Muebles de Cocina -->
+  <rect x="0" y="550" width="60" height="450" class="mueble-cocina" /> <!-- Mesón lateral izquierdo -->
+  <rect x="60" y="940" width="440" height="60" class="mueble-cocina" /> <!-- Mesón inferior -->
+  <rect x="420" y="560" width="70" height="80" class="mueble-cocina" /> <!-- Refrigerador -->
+  <circle cx="40" cy="910" r="20" class="simbolo-lavaplatos" /> <!-- Lavaplatos -->
+  <rect x="150" y="955" width="80" height="30" rx="5" ry="5" class="simbolo-cocina" /> <!-- Cocina / Horno -->
+
+  <!-- Muebles de Comedor -->
+  <rect x="150" y="200" width="200" height="100" class="mueble-comedor" /> <!-- Mesa -->
+  <rect x="110" y="210" width="30" height="30" class="mueble-comedor" /> <!-- Silla 1 -->
+  <rect x="110" y="260" width="30" height="30" class="mueble-comedor" /> <!-- Silla 2 -->
+  <rect x="360" y="210" width="30" height="30" class="mueble-comedor" /> <!-- Silla 3 -->
+  <rect x="360" y="260" width="30" height="30" class="mueble-comedor" /> <!-- Silla 4 -->
+  <rect x="190" y="160" width="30" height="30" class="mueble-comedor" /> <!-- Silla 5 -->
+  <rect x="280" y="160" width="30" height="30" class="mueble-comedor" /> <!-- Silla 6 -->
+
+  <!-- Muebles de Living -->
+  <rect x="600" y="850" width="300" height="100" rx="10" ry="10" class="mueble-living" /> <!-- Sofá -->
+  <rect x="700" y="700" width="100" height="60" rx="5" ry="5" class="mueble-living" /> <!-- Mesa de centro -->
+  <rect x="650" y="560" width="200" height="40" class="mueble-living" /> <!-- Mueble TV -->
+
+  <!-- Muebles de Hall -->
+  <rect x="520" y="420" width="100" height="40" rx="5" ry="5" class="mueble-hall" /> <!-- Recibidor/Consola -->
+
+  <!-- Muebles de Estudio -->
+  <rect x="650" y="100" width="150" height="60" rx="5" ry="5" class="mueble-estudio" /> <!-- Escritorio -->
+  <circle cx="700" cy="190" r="20" class="mueble-estudio" /> <!-- Silla de escritorio -->
+
+  <!-- Textos Técnicos: Comedor -->
   <text x="250" y="230" class="texto-principal">COMEDOR</text>
   <text x="250" y="270" class="texto-sub">25 m² (5.00m x 5.00m)</text>
 
-  <text x="250" y="730" class="texto-principal">COCINA</text>
-  <text x="250" y="770" class="texto-sub">Modificado</text>
+  <!-- Textos Técnicos: Cocina -->
+  <text x="250" y="745" class="texto-principal">COCINA</text>
+  <text x="250" y="785" class="texto-sub">22.5 m² (5.00m x 4.50m)</text>
+  
+  <!-- Textos Técnicos: Despensa -->
+  <text x="250" y="525" class="texto-principal">DESPENSA</text>
+  <text x="250" y="545" class="texto-sub">2.5 m² (5.00m x 0.50m)</text>
 
-  <text x="750" y="230" class="texto-principal">HALL DE ACCESO</text>
-  <text x="750" y="270" class="texto-sub">Modificado</text>
+  <!-- Textos Técnicos: Hall de Acceso -->
+  <text x="750" y="450" class="texto-principal">HALL DE ACCESO</text>
+  <text x="750" y="480" class="texto-sub">9 m² (Aprox.)</text>
 
-  <text x="750" y="730" class="texto-principal">LIVING</text>
-  <text x="750" y="770" class="texto-sub">25 m² (5.00m x 5.00m)</text>
+  <!-- Textos Técnicos: Estudio/Closet -->
+  <text x="800" y="200" class="texto-principal">ESTUDIO</text>
+  <text x="800" y="230" class="texto-sub">16 m² (4.00m x 4.00m)</text>
 
+  <!-- Textos Técnicos: Living -->
+  <text x="750" y="750" class="texto-principal">LIVING</text>
+  <text x="750" y="790" class="texto-sub">25 m² (5.00m x 5.00m)</text>
+
+  <!-- Muro Perimetral Final -->
   <rect x="0" y="0" width="1000" height="1000" class="muro-perimetral" />
 </svg>
 </body>
