@@ -3,6 +3,8 @@ name: Mi Agente IA
 on:
   issues:
     types: [opened, edited]
+  issue_comment:
+    types: [created] # ¡Nuevo! Ahora el bot escucha comentarios
 
 permissions:
   contents: write
@@ -10,22 +12,27 @@ permissions:
 
 jobs:
   ejecutar-ia:
-    if: contains(github.event.issue.labels.*.name, 'antigravity')
+    # Se ejecuta si el issue tiene el label OR si el comentario dice @antigravity
+    if: >
+      contains(github.event.issue.labels.*.name, 'antigravity') || 
+      contains(github.event.comment.body, '@antigravity') ||
+      contains(github.event.comment.body, '@AntiGravity')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          
+
       - name: Instalar SDK de Gemini
         run: npm install @google/genai
-        
+
       - name: El Cerebro de la IA
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          PROMPT_TEXT: ${{ github.event.issue.body }}
+          # ¡Nuevo! Usa el texto del comentario si existe, si no, usa el cuerpo del issue
+          PROMPT_TEXT: ${{ github.event.comment.body || github.event.issue.body }}
         run: |
           cat << 'EOF' > agente.js
           const { GoogleGenAI } = require('@google/genai');
@@ -41,7 +48,8 @@ jobs:
                 model: 'gemini-2.5-flash',
                 contents: instruccion,
               });
-              let nuevoCodigo = response.text.replace(/```html/gi, '').replace(/```/g, '').trim();
+              // Limpieza mejorada para quitar bloques de código markdown si la IA los incluye
+              let nuevoCodigo = response.text.replace(/```html/gi, '').replace(/```xml/gi, '').replace(/```svg/gi, '').replace(/```/g, '').trim();
               fs.writeFileSync('index.html', nuevoCodigo);
               console.log("¡Archivo reescrito con éxito!");
             } catch (error) {
